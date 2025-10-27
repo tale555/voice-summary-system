@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <title>音声要約システム</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>音声要約システム</h1>
+        <p>音声ファイルをアップロードして、自動で要約を生成します</p>
+        <div class="format-info">
+          <p><strong>⚠️ 注意事項</strong></p>
+          <ul>
+            <li>WAVファイルはモノラル（1チャンネル）形式で録音してください</li>
+            <li>ステレオ（2チャンネル）のWAVファイルは処理できません</li>
+          </ul>
+        </div>
+      </header>
+
+      <main>
+        <div class="upload-section">
+          <form id="uploadForm" enctype="multipart/form-data">
+            <div class="file-upload-area" id="uploadArea">
+              <input
+                type="file"
+                id="fileInput"
+                name="file"
+                accept="audio/*"
+                required
+              />
+              <div class="upload-icon">📁</div>
+              <p class="upload-text">
+                ファイルを選択するか、ここにドラッグ&ドロップ
+              </p>
+              <p class="file-info" id="fileInfo"></p>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+              要約を生成
+            </button>
+          </form>
+        </div>
+
+        <div
+          class="progress-section"
+          id="progressSection"
+          style="display: none"
+        >
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="progress-text" id="progressText">処理中...</p>
+        </div>
+
+        <div class="result-section" id="resultSection" style="display: none">
+          <h2>要約結果</h2>
+          <div class="result-content" id="resultContent"></div>
+          <button class="download-btn" id="downloadBtn">
+            結果をダウンロード
+          </button>
+        </div>
+
+        <div class="error-section" id="errorSection" style="display: none">
+          <div class="error-message" id="errorMessage"></div>
+        </div>
+      </main>
+
+      <footer>
+        <p>&copy; 2024 音声要約システム</p>
+      </footer>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById("fileInput");
+      const fileInfo = document.getElementById("fileInfo");
+      const uploadForm = document.getElementById("uploadForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const progressSection = document.getElementById("progressSection");
+      const progressFill = document.getElementById("progressFill");
+      const progressText = document.getElementById("progressText");
+      const resultSection = document.getElementById("resultSection");
+      const resultContent = document.getElementById("resultContent");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const errorSection = document.getElementById("errorSection");
+      const errorMessage = document.getElementById("errorMessage");
+
+      let outputFilename = "";
+
+      // ファイル選択の処理
+      fileInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          fileInfo.textContent = `選択されたファイル: ${file.name} (${(
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2)} MB)`;
+          submitBtn.disabled = false;
+        }
+      });
+
+      // フォーム送信の処理
+      uploadForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const file = fileInput.files[0];
+        if (!file) {
+          alert("ファイルを選択してください");
+          return;
+        }
+
+        // UIの更新
+        submitBtn.disabled = true;
+        progressSection.style.display = "block";
+        resultSection.style.display = "none";
+        errorSection.style.display = "none";
+
+        // プログレスバーのアニメーション
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress += 10;
+          progressFill.style.width = progress + "%";
+          if (progress >= 90) clearInterval(progressInterval);
+        }, 500);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          // アップロードと処理
+          progressText.textContent = "ファイルをアップロード中...";
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          clearInterval(progressInterval);
+          progressFill.style.width = "100%";
+
+          const result = await response.json();
+
+          if (result.success) {
+            progressText.textContent = "完了！";
+
+            // 結果の表示
+            resultContent.innerHTML = `
+                        <div class="transcript-section">
+                            <h3>音声認識結果</h3>
+                            <pre>${result.transcript}</pre>
+                        </div>
+                        <div class="summary-section">
+                            <h3>要約結果</h3>
+                            <pre>${result.summary}</pre>
+                        </div>
+                    `;
+
+            outputFilename = result.output_file;
+            resultSection.style.display = "block";
+          } else {
+            throw new Error(result.error || "処理に失敗しました");
+          }
+        } catch (error) {
+          errorMessage.textContent = error.message;
+          errorSection.style.display = "block";
+        } finally {
+          submitBtn.disabled = false;
+          setTimeout(() => {
+            progressSection.style.display = "none";
+            progressFill.style.width = "0%";
+          }, 2000);
+        }
+      });
+
+      // ダウンロードボタンの処理
+      downloadBtn.addEventListener("click", function () {
+        if (outputFilename) {
+          window.location.href = `/download/${outputFilename}`;
+        }
+      });
+
+      // PWA対応: ホーム画面への追加を支援
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          // サービスワーカーは現在未実装（将来的にオフライン対応を追加可能）
+          // navigator.serviceWorker.register('/static/sw.js');
+        });
+      }
+
+      // ホーム画面への追加確認（iOS）
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Android向けのインストールプロンプト
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

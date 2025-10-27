@@ -1,0 +1,12 @@
+# Google Cloud Speech-to-Text API 設定
+GOOGLE_APPLICATION_CREDENTIALS=configs/service-account-key.json
+
+# OpenAI API 設定
+OPENAI_API_KEY=あなたのOpenAI APIキー
+
+# Flask 設定
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# Google Cloud Storage 設定（長時間音声対応）
+GCS_BUCKET_NAME=voice-summary-audio

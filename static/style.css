@@ -1,0 +1,411 @@
+/* リセット */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* ヘッダー */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* 形式情報 */
+.format-info {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: left;
+    backdrop-filter: blur(10px);
+}
+
+.format-info p {
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.format-info ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.format-info li {
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.format-info li:before {
+    content: "• ";
+    position: absolute;
+    left: 0;
+}
+
+/* メインコンテンツ */
+main {
+    padding: 40px;
+}
+
+/* アップロードセクション */
+.upload-section {
+    margin-bottom: 30px;
+}
+
+.file-upload-area {
+    border: 3px dashed #667eea;
+    border-radius: 15px;
+    padding: 60px 20px;
+    text-align: center;
+    background: #f8f9ff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.file-upload-area:hover {
+    border-color: #764ba2;
+    background: #f0f2ff;
+}
+
+.file-upload-area input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.upload-text {
+    color: #667eea;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.file-info {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-top: 20px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* プログレスセクション */
+.progress-section {
+    margin: 30px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #e0e0e0;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    text-align: center;
+    margin-top: 10px;
+    color: #666;
+    font-weight: bold;
+}
+
+/* 結果セクション */
+.result-section {
+    background: #f8f9ff;
+    padding: 30px;
+    border-radius: 15px;
+    margin: 30px 0;
+}
+
+.result-section h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.result-content {
+    margin-bottom: 20px;
+}
+
+.transcript-section,
+.summary-section {
+    margin-bottom: 30px;
+}
+
+.transcript-section h3,
+.summary-section h3 {
+    color: #764ba2;
+    margin-bottom: 10px;
+}
+
+pre {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #e0e0e0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.download-btn {
+    width: 100%;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+    background: #218838;
+}
+
+/* エラーセクション */
+.error-section {
+    margin: 30px 0;
+}
+
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #c62828;
+}
+
+/* フッター */
+footer {
+    background: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        border-radius: 15px;
+    }
+    
+    header {
+        padding: 30px 15px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    header p {
+        font-size: 0.95em;
+    }
+    
+    main {
+        padding: 20px;
+    }
+    
+    .format-info {
+        padding: 15px;
+        font-size: 0.9em;
+    }
+    
+    .file-upload-area {
+        padding: 40px 15px;
+    }
+    
+    .upload-icon {
+        font-size: 3em;
+    }
+    
+    .upload-text {
+        font-size: 0.95em;
+    }
+    
+    .file-info {
+        font-size: 0.85em;
+    }
+    
+    .submit-btn,
+    .download-btn {
+        font-size: 1.1em;
+        padding: 12px;
+    }
+    
+    .result-section {
+        padding: 20px;
+    }
+    
+    .result-section h2 {
+        font-size: 1.5em;
+    }
+    
+    pre {
+        font-size: 0.85em;
+        padding: 15px;
+        max-height: 400px;
+    }
+}
+
+/* タッチデバイス対応 */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    header {
+        padding: 20px 10px;
+    }
+    
+    header h1 {
+        font-size: 1.5em;
+    }
+    
+    header p {
+        font-size: 0.9em;
+    }
+    
+    main {
+        padding: 15px;
+    }
+    
+    .format-info {
+        padding: 12px;
+        font-size: 0.85em;
+    }
+    
+    .file-upload-area {
+        padding: 30px 10px;
+    }
+    
+    .upload-icon {
+        font-size: 2.5em;
+    }
+    
+    .upload-text {
+        font-size: 0.9em;
+    }
+    
+    .submit-btn,
+    .download-btn {
+        font-size: 1em;
+        padding: 10px;
+    }
+    
+    .progress-text {
+        font-size: 0.9em;
+    }
+    
+    .result-section h2 {
+        font-size: 1.3em;
+    }
+    
+    pre {
+        font-size: 0.8em;
+        padding: 12px;
+        max-height: 300px;
+    }
+}
+
+/* タッチフレンドリーなボタン */
+@media (hover: none) {
+    .submit-btn:hover,
+    .download-btn:hover {
+        transform: none;
+    }
+    
+    .submit-btn:active,
+    .download-btn:active {
+        transform: scale(0.98);
+    }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-section,
+.error-section {
+    animation: fadeIn 0.5s ease;
+}
